@@ -1,2 +1,3 @@
-# social-computing-project
-Social Computing term project: kidney exchange problem with added constrains.
+# Social Computing Term Project
+
+Kidney exchange problem with added constrains.
