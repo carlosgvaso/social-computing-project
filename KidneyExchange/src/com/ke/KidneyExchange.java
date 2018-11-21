@@ -3,6 +3,9 @@
  */
 package com.ke;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * @author Jose Carlos Martinez Garcia-Vaso jcm3767 <carlosgvaso@gmail.com>
  * @author Trevor Anderson
@@ -12,12 +15,12 @@ package com.ke;
  */
 public class KidneyExchange {
 	// Class variables
-	private static int inf = 1000000000;// Infinity
+	private static int inf = Integer.MAX_VALUE;	// Infinity
 	
 	// Instance variables
-	private int L; 						// Cycle cap
-	private int[] w;					// Reduced edge weight vector
-	private Graph G;					// Reduced graph
+	private int L; 								// Cycle cap
+	private int[] w;							// Reduced edge weight vector
+	private Graph G;							// Reduced graph
 	
 	/**
 	 * A class to represent a weighted directed edge in graph.
@@ -74,12 +77,56 @@ public class KidneyExchange {
 	 * Find the negative weight cycles in graph G with a maximum length of L using a modified
 	 * version of the Bellman-Ford algorithm.
 	 * 
-	 * @param G	Reduced graph.
-	 * @param L	Maximum cycle length.
-	 * @param w	Reduced edge weight vector.
+	 * @param graph		Reduced graph.
+	 * @param cycleLen	Maximum cycle length.
+	 * @param reduced_w	Reduced edge weight vector.
 	 */
-	private void getNegativeCycles(Graph G, int L, int[] w) {
+	private void getNegativeCycles(Graph graph, int cycleLen, int[] reduced_w) {
+		ArrayList<Integer> cycles = new ArrayList<Integer>();
 		
+		for (int src=0; src<graph.V; src++) {
+			/*
+			 * Create array to track previous vertices already in the cycle. The array is of size
+			 * cycleLen, and it is initialized to -1 (no vertices in cycle).
+			 * */
+			int preds[] = new int[cycleLen];
+			Arrays.fill(preds, -1);
+			
+			/*
+			 * Create array to track the distance from the src (source) vertex to all the other
+			 * vertices. Distance is defined as the sum of the edge reduced weights in the computed
+			 * path. Then, initialize all the distances as infinite, except for the distance of the
+			 * source vertex to itself which is set to 0.
+			 */
+			int dist[] = new int[graph.V];
+			Arrays.fill(dist, KidneyExchange.inf);
+			dist[src] = 0;
+			
+			for (int i=0; i<(cycleLen-1); i++) {
+				for (int k=0; k<graph.E; k++) {
+					if (graph.edge[k].dest == this.traversePreds(graph.edge[k].src, preds, (i-1))) {
+						if () {
+							
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param source
+	 * @param predecesor
+	 * @param position
+	 * @return
+	 */
+	private int traversePreds(int source, int predecesor[], int position) {
+		/*
+		 *  TODO:
+		 *  - implement.
+		 */
+		return 0;
 	}
 
 	/**
