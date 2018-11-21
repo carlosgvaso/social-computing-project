@@ -78,37 +78,67 @@ public class KidneyExchange {
 	 * version of the Bellman-Ford algorithm.
 	 * 
 	 * @param graph		Reduced graph.
-	 * @param cycleLen	Maximum cycle length.
+	 * @param cycle_len	Maximum cycle length.
 	 * @param reduced_w	Reduced edge weight vector.
 	 */
-	private void getNegativeCycles(Graph graph, int cycleLen, int[] reduced_w) {
-		ArrayList<Integer> cycles = new ArrayList<Integer>();
+	private void getNegativeCycles(Graph graph, int cycle_len, int[] reduced_w) {
+		ArrayList<Integer> cycles = new ArrayList<Integer>(this.L);
 		
 		for (int src=0; src<graph.V; src++) {
 			/*
-			 * Create array to track previous vertices already in the cycle. The array is of size
-			 * cycleLen, and it is initialized to -1 (no vertices in cycle).
+			 * Create array matrix to track previous vertices already in the cycle. The array is of
+			 * size num of vertices by max cycle length, and it is initialized to -1 (no vertices in
+			 * cycle).
 			 * */
-			int preds[] = new int[cycleLen];
-			Arrays.fill(preds, -1);
+			int preds[][] = new int[graph.V][cycle_len];
 			
 			/*
-			 * Create array to track the distance from the src (source) vertex to all the other
-			 * vertices. Distance is defined as the sum of the edge reduced weights in the computed
-			 * path. Then, initialize all the distances as infinite, except for the distance of the
+			 * Create array matrix to track the distance from the src (source) vertex to all the
+			 * other vertices. The matrix is of size num of vertices by max cycle length. Distance
+			 * is defined as the sum of the edge reduced weights in the computed path. Then,
+			 * initialize all the initial distances as infinite, except for the distance of the
 			 * source vertex to itself which is set to 0.
 			 */
-			int dist[] = new int[graph.V];
-			Arrays.fill(dist, KidneyExchange.inf);
-			dist[src] = 0;
+			int dist[][] = new int[graph.V][cycle_len];
 			
-			for (int i=0; i<(cycleLen-1); i++) {
-				for (int k=0; k<graph.E; k++) {
-					if (graph.edge[k].dest == this.traversePreds(graph.edge[k].src, preds, (i-1))) {
-						if () {
+			// Initialize matrices as described above.
+			for (int i=0; i<graph.V; i++) {
+				for (int j=0; j<cycle_len; j++) {
+					preds[i][j] = -1;
+					dist[i][j] = KidneyExchange.inf;
+				}
+			}
+			dist[src][0] = 0;
+			
+			// Iterate over the max cycle length.
+			for (int i=1; i<cycle_len; i++) {
+				for (int dest=0; dest<graph.V; dest++) {
+					if (dest != src) {
+						dist[dest][i] = dist[dest][i-1];
+						preds[dest][i] = preds[dest][i-1];
+					}
+				}
+				
+				// Iterate over all edges.
+				for (int e=0; e<graph.E; e++) {
+					// If there is no loop in the path.
+					if (!this.traversePreds(graph.edge[e].src, preds, (i-1)).contains(graph.edge[e].dest)) {
+						// If the step decreases the distance of the node.
+						if (dist[graph.edge[e].src][i-1] + w[e] < dist[graph.edge[e].dest][i]) {
+							// Update to shorter distance
+							dist[graph.edge[e].dest][i] = dist[graph.edge[e].src][i-1] + w[e];
 							
+							// Store correct predecessor.
+							preds[graph.edge[e].dest][i] = graph.edge[e].src;
 						}
 					}
+				}
+			}
+			
+			// Find negative weight cycles with s as the source.
+			for (int v=0; v<graph.V; v++) {
+				if (v != src) {
+					
 				}
 			}
 		}
@@ -121,12 +151,22 @@ public class KidneyExchange {
 	 * @param position
 	 * @return
 	 */
-	private int traversePreds(int source, int predecesor[], int position) {
-		/*
-		 *  TODO:
-		 *  - implement.
-		 */
-		return 0;
+	private ArrayList<Integer> traversePreds(int source, int predecesor[][], int position) {
+		// Create cycle and current lists and add source to current.
+		ArrayList<Integer> cycle = new ArrayList<Integer>(this.L);	// Represents a cycle.
+		ArrayList<Integer> current = new ArrayList<Integer>(this.L);
+		current.add(source);
+		
+		// Iterate until current is empty which means we reached the source node.
+		while (!current.isEmpty()) {
+			// Add predecessor to path
+			cycle.addAll(current);
+			
+			// Get predecessor of current predecessor
+			
+		}
+		
+		return cycle;
 	}
 
 	/**
