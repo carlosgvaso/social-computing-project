@@ -113,6 +113,9 @@ public class KidneyExchange {
 			
 			// Iterate over the max cycle length.
 			for (int i=1; i<cycle_len; i++) {
+				System.out.println("i = " + i);
+				
+				// Set initial values
 				for (int dest=0; dest<graph.V; dest++) {
 					if (dest != src) {
 						dist[dest][i] = dist[dest][i-1];
@@ -122,15 +125,21 @@ public class KidneyExchange {
 				
 				// Iterate over all edges.
 				for (int e=0; e<graph.E; e++) {
+					System.out.println("Edge: " + e + ", src: " + graph.edge[e].src + ", dest: " + graph.edge[e].dest + ", weight: " + graph.edge[e].weight);
+					
 					// If there is no loop in the path.
 					if (!this.traversePreds(graph.edge[e].src, preds, (i-1)).contains(graph.edge[e].dest)) {
+						System.out.println("There is no loop in the path.");
+						
 						// If the step decreases the distance of the node.
 						if (dist[graph.edge[e].src][i-1] != KidneyExchange.inf && dist[graph.edge[e].src][i-1] + w[e] < dist[graph.edge[e].dest][i]) {
 							// Update to shorter distance
 							dist[graph.edge[e].dest][i] = dist[graph.edge[e].src][i-1] + w[e];
+							System.out.println("Update distance to: " + dist[graph.edge[e].dest][i]);
 							
 							// Store correct predecessor.
 							preds[graph.edge[e].dest][i] = graph.edge[e].src;
+							System.out.println("Update predecessor to: " + preds[graph.edge[e].dest][i]);
 						}
 					}
 				}
@@ -157,7 +166,8 @@ public class KidneyExchange {
 	 * @return	List of predecessors to the vertex.
 	 */
 	public ArrayList<Integer> traversePreds(int vertex, int predecessors[][], int position) {
-		System.out.println("traversePreds: destination=" + vertex + ", predecessors=" + predecessors + ", position=" + position);
+		//System.out.println("traversePreds: destination=" + vertex + ", position=" + position);
+		
 		// Create cycle and current lists and add source to current.
 		ArrayList<Integer> cycle = new ArrayList<Integer>(this.L);	// Represents a cycle.
 		int current = vertex;
@@ -166,12 +176,22 @@ public class KidneyExchange {
 		while (current != -1) {
 			// Add predecessor to path
 			cycle.add(current);
-			System.out.println("Current added to cycle: " + current + ", position: " + position);
+			//System.out.println("Current added to cycle: " + current + ", position: " + position);
 			
 			// Get predecessor of current predecessor
 			current = predecessors[current][position];
-			System.out.println("Predecesor of current: " + current + ", position: " + position);
+			//System.out.println("Predecesor of current: " + current + ", position: " + position);
 			position--;
+		}
+		
+		System.out.print("predecessors traversed: ");
+		for (int i=0; i<cycle.size(); i++) {
+			System.out.print(cycle.get(i));
+			if (i != cycle.size()-1) {
+				System.out.print(", ");
+			} else {
+				System.out.println();
+			}
 		}
 		
 		return cycle;
