@@ -74,10 +74,26 @@ public class KidneyExchangeTest {
 		// Expected cycles
 		ArrayList<Integer> cycle_exp = new ArrayList<Integer>(k.L);
 		ArrayList<ArrayList<Integer>> cycles_exp = new ArrayList<ArrayList<Integer>>();
+		
+		cycles_exp.clear();
+		cycle_exp.clear();
 		cycle_exp.add(2);
 		cycle_exp.add(1);
 		cycle_exp.add(0);
-		cycles_exp.add(cycle_exp);
+		cycles_exp.add(new ArrayList<Integer>(cycle_exp));
+		cycle_exp.clear();
+		
+		cycle_exp.add(0);
+		cycle_exp.add(2);
+		cycle_exp.add(1);
+		cycles_exp.add(new ArrayList<Integer>(cycle_exp));
+		cycle_exp.clear();
+		
+		cycle_exp.add(1);
+		cycle_exp.add(0);
+		cycle_exp.add(2);
+		cycles_exp.add(new ArrayList<Integer>(cycle_exp));
+		cycle_exp.clear();
 		
 		k.getNegativeCycles(k.G, k.L);
 		
