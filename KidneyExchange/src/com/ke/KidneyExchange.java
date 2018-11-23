@@ -145,12 +145,14 @@ public class KidneyExchange {
 				}
 			}
 			
-			// Find negative weight cycles with s as the source.
-			for (int v=0; v<graph.V; v++) {
-				if (v != src) {
-					
-					if (dist[v][cycle_len-1] + w [src] < 0) {	// ?
-						cycles.add(this.traversePreds(v, preds, cycle_len-1));
+			// Find negative weight cycles with s as the source. Iterate over all edges
+			for (int e=0; e<graph.E; e++) {
+				System.out.println("Edge: " + e + ", src: " + graph.edge[e].src + ", dest: " + graph.edge[e].dest + ", weight: " + graph.edge[e].weight);
+				
+				// If the edge points from any vertex v (v!=src) to the src vertex (cycle).
+				if (graph.edge[e].src != src && graph.edge[e].dest == src) {
+					if (dist[graph.edge[e].src][cycle_len-1] != KidneyExchange.inf && dist[graph.edge[e].src][cycle_len-1] + w [e] < 0) {
+						cycles.add(this.traversePreds(graph.edge[e].src, preds, cycle_len-1));
 					}
 				}
 			}
