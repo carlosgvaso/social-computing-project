@@ -4,7 +4,6 @@
 package com.ke;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * @author Jose Carlos Martinez Garcia-Vaso jcm3767 <carlosgvaso@gmail.com>
@@ -15,12 +14,13 @@ import java.util.Arrays;
  */
 public class KidneyExchange {
 	// Class variables
-	private static int inf = Integer.MAX_VALUE;	// Infinity
+	private static int inf = Integer.MAX_VALUE;		// Infinity
 	
 	// Instance variables
-	private int L; 								// Cycle cap
-	private int[] w;							// Reduced edge weight vector
-	private Graph G;							// Reduced graph
+	private int L; 									// Cycle cap
+	private int[] w;								// Reduced edge weight vector. It is organized in the same order as the array of edges in the graph.
+	private Graph G;								// Reduced graph
+	private ArrayList<ArrayList<Integer>> cycles;	// Negative cycles in the graph
 	
 	/**
 	 * A class to represent a weighted directed edge in graph.
@@ -30,7 +30,7 @@ public class KidneyExchange {
 	 * 	dest	Edge destination vertex.
 	 * 	weight	Edge weight.
 	 */
-	private class Edge {
+	public class Edge {
 		public int src, dest, weight;
 		
 		// Create an empty directed edge (src=dest=weight=0).
@@ -59,7 +59,7 @@ public class KidneyExchange {
 	 * 	graph.edge[0].dest = 3; 
 	 * 	graph.edge[0].weight = 1; 
 	 */
-	private class Graph { 
+	public class Graph { 
 		public int V, E;
 		public Edge edge[];
 		
@@ -79,10 +79,11 @@ public class KidneyExchange {
 	 * 
 	 * @param graph		Reduced graph.
 	 * @param cycle_len	Maximum cycle length.
-	 * @param reduced_w	Reduced edge weight vector.
+	 * @param reduced_w	Reduced edge weight vector. It is organized in the same order as the array of edges in the graph.
 	 */
-	private void getNegativeCycles(Graph graph, int cycle_len, int[] reduced_w) {
-		ArrayList<Integer> cycles = new ArrayList<Integer>(this.L);
+	public void getNegativeCycles(Graph graph, int cycle_len, int[] reduced_w) {
+		// Empty the accumulator set for negative weight cycles.
+		this.cycles.clear();
 		
 		for (int src=0; src<graph.V; src++) {
 			/*
@@ -124,7 +125,7 @@ public class KidneyExchange {
 					// If there is no loop in the path.
 					if (!this.traversePreds(graph.edge[e].src, preds, (i-1)).contains(graph.edge[e].dest)) {
 						// If the step decreases the distance of the node.
-						if (dist[graph.edge[e].src][i-1] + w[e] < dist[graph.edge[e].dest][i]) {
+						if (dist[graph.edge[e].src][i-1] != KidneyExchange.inf && dist[graph.edge[e].src][i-1] + w[e] < dist[graph.edge[e].dest][i]) {
 							// Update to shorter distance
 							dist[graph.edge[e].dest][i] = dist[graph.edge[e].src][i-1] + w[e];
 							
@@ -139,31 +140,38 @@ public class KidneyExchange {
 			for (int v=0; v<graph.V; v++) {
 				if (v != src) {
 					
+					if (dist[v][cycle_len-1] + w [src] < 0) {	// ?
+						cycles.add(this.traversePreds(v, preds, cycle_len-1));
+					}
 				}
 			}
 		}
 	}
 	
 	/**
+	 * Traverse all predecessors to the vertex and provide a list of predecessors.
 	 * 
-	 * @param source
-	 * @param predecesor
-	 * @param position
-	 * @return
+	 * @param vertex		Vertex.
+	 * @param predecessors	Predecessors array matrix.
+	 * @param position		Position in the cycle.
+	 * @return	List of predecessors to the vertex.
 	 */
-	private ArrayList<Integer> traversePreds(int source, int predecesor[][], int position) {
+	public ArrayList<Integer> traversePreds(int vertex, int predecessors[][], int position) {
+		System.out.println("traversePreds: destination=" + vertex + ", predecessors=" + predecessors + ", position=" + position);
 		// Create cycle and current lists and add source to current.
 		ArrayList<Integer> cycle = new ArrayList<Integer>(this.L);	// Represents a cycle.
-		ArrayList<Integer> current = new ArrayList<Integer>(this.L);
-		current.add(source);
+		int current = vertex;
 		
 		// Iterate until current is empty which means we reached the source node.
-		while (!current.isEmpty()) {
+		while (current != -1) {
 			// Add predecessor to path
-			cycle.addAll(current);
+			cycle.add(current);
+			System.out.println("Current added to cycle: " + current + ", position: " + position);
 			
 			// Get predecessor of current predecessor
-			
+			current = predecessors[current][position];
+			System.out.println("Predecesor of current: " + current + ", position: " + position);
+			position--;
 		}
 		
 		return cycle;
