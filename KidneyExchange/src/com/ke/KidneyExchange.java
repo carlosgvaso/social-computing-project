@@ -14,13 +14,22 @@ import java.util.ArrayList;
  */
 public class KidneyExchange {
 	// Class variables
-	private static int inf = Integer.MAX_VALUE;		// Infinity
+	private static int inf = Integer.MAX_VALUE;	// Infinity
 	
 	// Instance variables
-	private int L; 									// Cycle cap
-	private int[] w;								// Reduced edge weight vector. It is organized in the same order as the array of edges in the graph.
-	private Graph G;								// Reduced graph
-	private ArrayList<ArrayList<Integer>> cycles;	// Negative cycles in the graph
+	public int L; 								// Cycle cap
+	public int V;								// Number of vertices
+	public int E;								// Number of edges
+	public Graph G;								// Reduced graph
+	public ArrayList<ArrayList<Integer>> cycles;// Negative cycles in the graph
+	
+	public KidneyExchange(int L, int V, int E) {
+		this.L = L;
+		this.V = V;
+		this.E = E;
+		this.G = new Graph(this.V, this.E);
+		this.cycles = new ArrayList<ArrayList<Integer>>();
+	}
 	
 	/**
 	 * A class to represent a weighted directed edge in graph.
@@ -34,12 +43,12 @@ public class KidneyExchange {
 		public int src, dest, weight;
 		
 		// Create an empty directed edge (src=dest=weight=0).
-		Edge() {
+		public Edge() {
 			src = dest = weight = 0; 
 		}
 		
 		// Create a directed edge.
-		Edge(int src, int dest, int weight) {
+		public Edge(int src, int dest, int weight) {
 			this.src = src;
 			this.dest = dest;
 			this.weight = weight; 
@@ -64,7 +73,7 @@ public class KidneyExchange {
 		public Edge edge[];
 		
 		// Creates a graph with V vertices and E edges, where all the edges are empty.
-		Graph(int v, int e) {
+		public Graph(int v, int e) {
 			V = v;
 			E = e;
 			edge = new Edge[e];
@@ -79,12 +88,14 @@ public class KidneyExchange {
 	 * 
 	 * @param graph		Reduced graph.
 	 * @param cycle_len	Maximum cycle length.
-	 * @param reduced_w	Reduced edge weight vector. It is organized in the same order as the array of edges in the graph.
 	 */
-	public void getNegativeCycles(Graph graph, int cycle_len, int[] reduced_w) {
+	public void getNegativeCycles(Graph graph, int cycle_len) {
 		// Empty the accumulator set for negative weight cycles.
-		this.cycles.clear();
-		
+		/*
+		if (!this.cycles.isEmpty()) {
+			this.cycles.clear();
+		}
+		*/
 		for (int src=0; src<graph.V; src++) {
 			/*
 			 * Create array matrix to track previous vertices already in the cycle. The array is of
@@ -132,9 +143,9 @@ public class KidneyExchange {
 						System.out.println("There is no loop in the path.");
 						
 						// If the step decreases the distance of the node.
-						if (dist[graph.edge[e].src][i-1] != KidneyExchange.inf && dist[graph.edge[e].src][i-1] + w[e] < dist[graph.edge[e].dest][i]) {
+						if (dist[graph.edge[e].src][i-1] != KidneyExchange.inf && dist[graph.edge[e].src][i-1] + graph.edge[e].weight < dist[graph.edge[e].dest][i]) {
 							// Update to shorter distance
-							dist[graph.edge[e].dest][i] = dist[graph.edge[e].src][i-1] + w[e];
+							dist[graph.edge[e].dest][i] = dist[graph.edge[e].src][i-1] + graph.edge[e].weight;
 							System.out.println("Update distance to: " + dist[graph.edge[e].dest][i]);
 							
 							// Store correct predecessor.
@@ -149,10 +160,10 @@ public class KidneyExchange {
 			for (int e=0; e<graph.E; e++) {
 				System.out.println("Edge: " + e + ", src: " + graph.edge[e].src + ", dest: " + graph.edge[e].dest + ", weight: " + graph.edge[e].weight);
 				
-				// If the edge points from any vertex v (v!=src) to the src vertex (cycle).
+				// If the edge points from any vertex v (v!=src) to the src vertex (we have a cycle).
 				if (graph.edge[e].src != src && graph.edge[e].dest == src) {
-					if (dist[graph.edge[e].src][cycle_len-1] != KidneyExchange.inf && dist[graph.edge[e].src][cycle_len-1] + w [e] < 0) {
-						cycles.add(this.traversePreds(graph.edge[e].src, preds, cycle_len-1));
+					if (dist[graph.edge[e].src][cycle_len-1] != KidneyExchange.inf && dist[graph.edge[e].src][cycle_len-1] + graph.edge[e].weight < 0) {
+						this.cycles.add(this.traversePreds(graph.edge[e].src, preds, cycle_len-1));
 					}
 				}
 			}
@@ -182,7 +193,7 @@ public class KidneyExchange {
 			
 			// Get predecessor of current predecessor
 			current = predecessors[current][position];
-			//System.out.println("Predecesor of current: " + current + ", position: " + position);
+			//System.out.println("Predecessor of current: " + current + ", position: " + position);
 			position--;
 		}
 		
