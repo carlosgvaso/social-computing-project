@@ -4,8 +4,11 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.ke.KidneyExchange;
+import com.ke.KidneyExchange.CycleStruct;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Test class for KidneyExchange.
@@ -56,20 +59,54 @@ public class KidneyExchangeTest {
 	@Test
 	public void testGetNegativeCycles() {
 		// Assume L=3, |V|=3, |E|=3
-		KidneyExchange k = new KidneyExchange(3, 3, 3);
+		KidneyExchange k = new KidneyExchange(3, 5, 9);
 		
 		// Set up graph
 		k.G.edge[0].src = 0;
 		k.G.edge[0].dest = 1;
-		k.G.edge[0].weight = -1;
+		k.G.edge[0].weight = 1;
+		k.G.edge[0].dual = -1;
 		
 		k.G.edge[1].src = 1;
-		k.G.edge[1].dest = 2;
-		k.G.edge[1].weight = -2;
+		k.G.edge[1].dest = 0;
+		k.G.edge[1].weight = 1;
+		k.G.edge[1].dual = -1;
 		
-		k.G.edge[2].src = 2;
-		k.G.edge[2].dest = 0;
-		k.G.edge[2].weight = -2;
+		k.G.edge[2].src = 1;
+		k.G.edge[2].dest = 2;
+		k.G.edge[2].weight = 1;
+		k.G.edge[2].dual = -2;
+		
+		k.G.edge[3].src = 2;
+		k.G.edge[3].dest = 1;
+		k.G.edge[3].weight = 1;
+		k.G.edge[3].dual = -1;
+		
+		k.G.edge[4].src = 2;
+		k.G.edge[4].dest = 3;
+		k.G.edge[4].weight = 1;
+		k.G.edge[4].dual = -1;
+		
+		k.G.edge[5].src = 3;
+		k.G.edge[5].dest = 2;
+		k.G.edge[5].weight = 1;
+		k.G.edge[5].dual = -2;
+		
+		k.G.edge[6].src = 2;
+		k.G.edge[6].dest = 4;
+		k.G.edge[6].weight = 1;
+		k.G.edge[6].dual = -1;
+		
+		k.G.edge[7].src = 4;
+		k.G.edge[7].dest = 0;
+		k.G.edge[7].weight = 1;
+		k.G.edge[7].dual = -1;
+		
+		k.G.edge[8].src = 4;
+		k.G.edge[8].dest = 3;
+		k.G.edge[8].weight = 1;
+		k.G.edge[8].dual = -1;
+		
 		
 		// Expected cycles
 		ArrayList<Integer> cycle_exp = new ArrayList<Integer>(k.L);
@@ -95,25 +132,68 @@ public class KidneyExchangeTest {
 		cycles_exp.add(new ArrayList<Integer>(cycle_exp));
 		cycle_exp.clear();
 		
-		k.getNegativeCycles(k.G, k.L);
+
+		ArrayList<ArrayList<Integer>> cycles = k.getNegativeCycles(k.G, k.L);
+		ArrayList<CycleStruct> feasiblecycles = k.DetermineFeasibleWeightedCycles(cycles);
+		CycleStruct bestCycleSet = k.DetermineHighestWeightedCycle(feasiblecycles);
+		//ArrayList<ArrayList<Integer>> cycles = k.GetDiscountedPositivePriceCycles(k.G, k.L, .8);
+		
+		//HashSet<HashSet<Integer>> cycleSet = new HashSet<HashSet<Integer>>();
 		
 		System.out.print("cycles: {");
-		for (int i=0; i<k.cycles.size(); i++) {
-			System.out.print("(");
-			for (int j=0; j<k.cycles.get(i).size(); j++) {
-				if (j != k.cycles.get(i).size()-1) {
-					System.out.print(k.cycles.get(i).get(j) + ", ");
+		if(cycles.size() > 0) {
+			for (int i=0; i<cycles.size(); i++) {
+				//HashSet cSet = new HashSet<Integer>();
+				
+				System.out.print("(");
+				for (int j=0; j<cycles.get(i).size(); j++) {
+					if (j != cycles.get(i).size()-1) {
+						System.out.print(cycles.get(i).get(j) + ", ");
+					} else {
+						System.out.print(cycles.get(i).get(j));
+					}
+				}
+				if (i != cycles.size()-1) {
+					System.out.print("), ");
 				} else {
-					System.out.print(k.cycles.get(i).get(j));
+					System.out.println(")}");
 				}
 			}
-			if (i != k.cycles.size()-1) {
-				System.out.print("), ");
-			} else {
-				System.out.println(")}");
+		}
+		else
+			System.out.println("}");
+		
+		System.out.println("Feasible Cycles");
+		for (int m = 0; m < feasiblecycles.size(); m++) {
+			System.out.print("{ ");
+			for(int i = 0; i < bestCycleSet.IncludedCycles.size(); i++) {
+				ArrayList<Integer> path = bestCycleSet.IncludedCycles.get(i);
+				System.out.print("(");
+				int firstFinal = -1;
+				for (int j = 0; j < path.size(); j++) {
+					if (j == 0)
+						firstFinal = path.get(j);
+					System.out.print(path.get(j) + " -> ");
+				}
+				System.out.print(firstFinal + "), ");
 			}
 		}
+		System.out.println("");
 		
-		assertTrue(k.cycles.equals(cycles_exp));
+		System.out.println("Maximum Weight Cycle");
+		System.out.print("{ ");
+		for(int i = 0; i < bestCycleSet.IncludedCycles.size(); i++) {
+			ArrayList<Integer> path = bestCycleSet.IncludedCycles.get(i);
+			System.out.print("(");
+			int firstFinal = -1;
+			for (int j = 0; j < path.size(); j++) {
+				if (j == 0)
+					firstFinal = path.get(j);
+				System.out.print(path.get(j) + " -> ");
+			}
+			System.out.print(firstFinal + ") ");
+		}
+		System.out.println("}");
+		assertTrue(cycles.equals(cycles_exp));
 	}
 }
