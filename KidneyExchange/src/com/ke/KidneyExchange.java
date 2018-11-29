@@ -3,8 +3,11 @@
  */
 package com.ke;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Scanner;
 
 /**
  * @author Jose Carlos Martinez Garcia-Vaso jcm3767 <carlosgvaso@gmail.com>
@@ -312,13 +315,91 @@ public class KidneyExchange {
 	}
 	
 	
+	/**
+     	* Parse input file.
+     	* @return KidneyExchange instance
+     	*/
+    	public static KidneyExchange parseInput(String inputFile) {
+		Scanner scanner;
+		int numVertices = 0;
+		int numEdges = 0;
+		ArrayList<Edge> edges = new ArrayList<>();
+		// create scanner object to parse file
+		try {
+		    scanner = new Scanner(new File(inputFile));
+		} catch (FileNotFoundException e) {
+		    System.out.println("Error. File not found: " + inputFile);
+		    return null;
+		}
+		// parse the matrix size from first line
+		if (scanner.hasNextInt()) {
+		    numVertices = scanner.nextInt();
+		} else {
+		    System.out.println("Error. Failed to parse matrix size. Input file is incorrectly formatted.");
+		    scanner.close();
+		    return null;
+		}
+		// parse the square matrix values and calculate non-zero weight edges
+		int[][] weights = new int[numVertices][numVertices];
+		for (int rowIndex = 0; rowIndex < numVertices; rowIndex++) {
+		    for (int colIndex = 0; colIndex < numVertices; colIndex++) {
+			if (scanner.hasNextInt()) {
+			    int edgeWeight = scanner.nextInt();
+			    weights[rowIndex][colIndex] = edgeWeight;
+			    if (edgeWeight != 0) {
+				numEdges++;
+			    }
+			} else {
+			    System.out.println("Error. Failed to parse weight matrix. Input file is incorrectly formatted.");
+			    scanner.close();
+			    return null;
+			}
+		    }
+		}
+		// done parsing file, success
+		scanner.close();
+		// create KidneyExchange instance
+		KidneyExchange ke = new KidneyExchange(3, numVertices, numEdges);
+		// update edge values
+		int edgeIndex = 0;
+		for (int rowIndex = 0; rowIndex < numVertices; rowIndex++) {
+		    for (int colIndex = 0; colIndex < numVertices; colIndex++) {
+			int edgeWeight = weights[rowIndex][colIndex];
+			if (edgeWeight != 0) {
+			    ke.G.edge[edgeIndex].src = rowIndex;
+			    ke.G.edge[edgeIndex].dest = colIndex;
+			    ke.G.edge[edgeIndex].weight = edgeWeight;
+			    edgeIndex++;
+			}
+		    }
+		}
+		// return created KidneyExchange instance
+		return ke;
+	}
+	
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		
+		// verify one argument: inputFile
+        	if (args.length != 1) {
+        	    System.out.println("Error. Java program KidneyExchange expects 1 argument specifying an input file.");
+        	    return;
+        	}
+        	String inputFile = args[0];
+                
+        	// parse input file to create KidneyExchange instance
+        	KidneyExchange ke = parseInput(inputFile);
+        
+        	// print graph edges for debug
+        	//for (Edge edge : ke.G.edge) {
+            	//	System.out.println("Edge: " + (edge.src+1) + " --> " + (edge.dest+1) + " , weight: " + edge.weight);
+        	//}
+        
+        	//TODO - further algorithm implementation
+		
 	}
 
 }
