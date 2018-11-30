@@ -133,10 +133,12 @@ public class KidneyExchangeTest {
 		cycle_exp.clear();
 		
 
-		ArrayList<ArrayList<Integer>> cycles = k.getNegativeCycles(k.G, k.L);
+		//ArrayList<ArrayList<Integer>> cycles = k.getNegativeCycles(k.G, k.L);
+
+		ArrayList<ArrayList<Integer>> cycles = k.GetDiscountedPositivePriceCycles(k.G, k.L, 8);
 		ArrayList<CycleStruct> feasiblecycles = k.DetermineFeasibleWeightedCycles(cycles);
 		CycleStruct bestCycleSet = k.DetermineHighestWeightedCycle(feasiblecycles);
-		//ArrayList<ArrayList<Integer>> cycles = k.GetDiscountedPositivePriceCycles(k.G, k.L, .8);
+		//ArrayList<ArrayList<Integer>> cycles2 = k.GetDiscountedPositivePriceCycles(k.G, k.L, .8);
 		
 		//HashSet<HashSet<Integer>> cycleSet = new HashSet<HashSet<Integer>>();
 		
@@ -163,6 +165,29 @@ public class KidneyExchangeTest {
 		else
 			System.out.println("}");
 		
+		/*System.out.print("cycles2: {");
+		if(cycles2.size() > 0) {
+			for (int i=0; i<cycles2.size(); i++) {
+				//HashSet cSet = new HashSet<Integer>();
+				
+				System.out.print("(");
+				for (int j=0; j<cycles2.get(i).size(); j++) {
+					if (j != cycles2.get(i).size()-1) {
+						System.out.print(cycles2.get(i).get(j) + ", ");
+					} else {
+						System.out.print(cycles2.get(i).get(j));
+					}
+				}
+				if (i != cycles2.size()-1) {
+					System.out.print("), ");
+				} else {
+					System.out.println(")}");
+				}
+			}
+		}
+		else
+			System.out.println("}");*/
+		
 		System.out.println("Feasible Cycles");
 		for (int m = 0; m < feasiblecycles.size(); m++) {
 			System.out.print("{ ");
@@ -177,8 +202,9 @@ public class KidneyExchangeTest {
 				}
 				System.out.print(firstFinal + "), ");
 			}
+
+			System.out.println("}");
 		}
-		System.out.println("");
 		
 		System.out.println("Maximum Weight Cycle");
 		System.out.print("{ ");
