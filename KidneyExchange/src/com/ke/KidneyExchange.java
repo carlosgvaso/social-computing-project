@@ -261,8 +261,9 @@ public class KidneyExchange {
 		//Iterate through all cycles as starting point
 		for (int k = 0; k < cycles.size(); k++) {
 			ArrayList<Integer> cycleA = cycles.get(k);
-			ArrayList<Integer> cycleList = new ArrayList<Integer>();
+			//ArrayList<Integer> cycleList = new ArrayList<Integer>();
 			for (int i = 0; i < cycles.size(); i++) {
+				ArrayList<Integer> cycleList = new ArrayList<Integer>();
 				HashSet<Integer> vertexSet = new HashSet<Integer>();
 				vertexSet.addAll(cycleA);
 				for (int j = 0; j < cycles.size(); j++) {
@@ -292,6 +293,7 @@ public class KidneyExchange {
 							cs.IncludedCycles.add(cycle);
 						}
 						WeightedCycles.add(cs);
+						
 					}
 				}
 			}
