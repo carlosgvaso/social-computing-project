@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
-
 import com.ke.KidneyExchange.CycleStruct;
 
 /**
@@ -385,7 +384,6 @@ public class KidneyExchange {
  * @param args
  */
 public static void main(String[] args) {
-	
 	// verify one argument: inputFile
     	if (args.length != 1) {
     	    System.out.println("Error. Java program KidneyExchange expects 1 argument specifying an input file.");
@@ -395,8 +393,6 @@ public static void main(String[] args) {
             
     	// parse input file to create KidneyExchange instance
     	KidneyExchange k = parseInput(inputFile);
-
-		k.makeGraph();
 
 		ArrayList<ArrayList<Integer>> cycles = k.getNegativeCycles(k.G, k.L);
 		k.OutputCycles(cycles);
@@ -527,6 +523,8 @@ public static void main(String[] args) {
 		}
 		else
 			System.out.println("}");
-	}
+  }
+	
+	
 
 }
