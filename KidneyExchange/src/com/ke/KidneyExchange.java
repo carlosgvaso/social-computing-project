@@ -6,6 +6,8 @@ package com.ke;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import com.ke.KidneyExchange.CycleStruct;
+
 /**
  * @author Jose Carlos Martinez Garcia-Vaso jcm3767 <carlosgvaso@gmail.com>
  * @author Trevor Anderson
@@ -15,7 +17,7 @@ import java.util.HashSet;
  */
 public class KidneyExchange {
 	// Class variables
-	private static int inf = Integer.MAX_VALUE;	// Infinity
+	private static double inf = Double.MAX_VALUE;	// Infinity
 	
 	// Instance variables
 	public int L; 								// Cycle cap
@@ -40,13 +42,13 @@ public class KidneyExchange {
 	 * 	weight	Edge weight.
 	 */
 	public class Edge {
-		public int src, dest, weight;
-		public double dual;
+		public int src, dest;
+		public double weight, dual;
 		
 		// Create an empty directed edge (src=dest=weight=0).
 		public Edge() {
-			src = dest = weight = 0; 
-			dual = 0;
+			src = dest = 0; 
+			dual = weight = 0;
 		}
 		
 		// Create a directed edge.
@@ -141,7 +143,7 @@ public class KidneyExchange {
 			
 			// Iterate over the max cycle length.
 			for (int i=1; i<cycle_len; i++) {
-				System.out.println("i = " + i);
+				//System.out.println("i = " + i);
 				
 				// Set initial values
 				for (int dest=0; dest<graph.V; dest++) {
@@ -153,21 +155,21 @@ public class KidneyExchange {
 				
 				// Iterate over all edges.
 				for (int e=0; e<graph.E; e++) {
-					System.out.println("Edge: " + e + ", src: " + graph.edge[e].src + ", dest: " + graph.edge[e].dest + ", dual weight: " + graph.edge[e].dual);
+					//System.out.println("Edge: " + e + ", src: " + graph.edge[e].src + ", dest: " + graph.edge[e].dest + ", dual weight: " + graph.edge[e].dual);
 					
 					// If there is no loop in the path.
 					if (!this.traversePreds(graph.edge[e].src, preds, (i-1)).contains(graph.edge[e].dest)) {
-						System.out.println("There is no loop in the path.");
+						//System.out.println("There is no loop in the path.");
 						
 						// If the step decreases the distance of the node.
 						if (dist[graph.edge[e].src][i-1] != KidneyExchange.inf && dist[graph.edge[e].src][i-1] + graph.edge[e].dual < dist[graph.edge[e].dest][i]) {
 							// Update to shorter distance
 							dist[graph.edge[e].dest][i] = dist[graph.edge[e].src][i-1] + graph.edge[e].dual;
-							System.out.println("Update distance to: " + dist[graph.edge[e].dest][i]);
+							//System.out.println("Update distance to: " + dist[graph.edge[e].dest][i]);
 							
 							// Store correct predecessor.
 							preds[graph.edge[e].dest][i] = graph.edge[e].src;
-							System.out.println("Update predecessor to: " + preds[graph.edge[e].dest][i]);
+							//System.out.println("Update predecessor to: " + preds[graph.edge[e].dest][i]);
 						}
 					}
 				}
@@ -175,7 +177,7 @@ public class KidneyExchange {
 			
 			// Find negative weight cycles with s as the source. Iterate over all edges
 			for (int e=0; e<graph.E; e++) {
-				System.out.println("Edge: " + e + ", src: " + graph.edge[e].src + ", dest: " + graph.edge[e].dest + ", dual weight: " + graph.edge[e].dual);
+				//System.out.println("Edge: " + e + ", src: " + graph.edge[e].src + ", dest: " + graph.edge[e].dest + ", dual weight: " + graph.edge[e].dual);
 				
 				// If the edge points from any vertex v (v!=src) to the src vertex (we have a cycle).
 				if (graph.edge[e].src != src && graph.edge[e].dest == src) {
@@ -223,13 +225,13 @@ public class KidneyExchange {
 			position--;
 		}
 		
-		System.out.print("predecessors traversed: ");
+		//System.out.print("predecessors traversed: ");
 		for (int i=0; i<cycle.size(); i++) {
-			System.out.print(cycle.get(i));
+			//System.out.print(cycle.get(i));
 			if (i != cycle.size()-1) {
-				System.out.print(", ");
+				//System.out.print(", ");
 			} else {
-				System.out.println();
+				//System.out.println();
 			}
 		}
 		
@@ -243,7 +245,7 @@ public class KidneyExchange {
 			for (int i = 0; i < G.E; i++) {
 				int src = G.edge[i].src;
 				int dest = G.edge[i].dest;
-				double dual = (G.edge[i].dual - (G.edge[i].weight * Math.pow(probability, l)));
+				double dual = (G.edge[i].dual - (G.edge[i].weight));// * Math.pow(probability, l)));
 				altG.edge[i] = new Edge(src,dest,dual,0);
 			}
 			cycle.addAll(getNegativeCycles(altG, l));
@@ -315,12 +317,146 @@ public class KidneyExchange {
 	
 	
 	
+	
+	
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
+		KidneyExchange k = new KidneyExchange(3, 5, 9);
+		k.makeGraph();
+
+		ArrayList<ArrayList<Integer>> cycles = k.getNegativeCycles(k.G, k.L);
+		k.OutputCycles(cycles);
+		
+		ArrayList<CycleStruct> feasiblecycles = k.DetermineFeasibleWeightedCycles(cycles);
+		k.OutputFeasibleCycles(feasiblecycles);
+		
+		CycleStruct bestCycleSet = k.DetermineHighestWeightedCycle(feasiblecycles);
+		k.OutputFinalCycles(bestCycleSet);
+		
+		
+		ArrayList<ArrayList<Integer>> failurecycles = k.GetDiscountedPositivePriceCycles(k.G, k.L, 1000);
+		k.OutputCycles(failurecycles);
+		
+
+		ArrayList<ArrayList<Integer>> failurecycles2 = k.GetDiscountedPositivePriceCycles(k.G, k.L, .001);
+		k.OutputCycles(failurecycles2);
+	}
+
+	private void makeGraph() {
+		// Set up graph
+		G.edge[0].src = 0;
+		G.edge[0].dest = 1;
+		G.edge[0].weight = 1;
+		G.edge[0].dual = -1;
+		
+		G.edge[1].src = 1;
+		G.edge[1].dest = 0;
+		G.edge[1].weight = 1;
+		G.edge[1].dual = -1;
+		
+		G.edge[2].src = 1;
+		G.edge[2].dest = 2;
+		G.edge[2].weight = 1;
+		G.edge[2].dual = -2;
+
+		G.edge[3].src = 2;
+		G.edge[3].dest = 1;
+		G.edge[3].weight = 1;
+		G.edge[3].dual = -1;
+		
+		G.edge[4].src = 2;
+		G.edge[4].dest = 3;
+		G.edge[4].weight = 1;
+		G.edge[4].dual = -1;
+		
+		G.edge[5].src = 3;
+		G.edge[5].dest = 2;
+		G.edge[5].weight = 1;
+		G.edge[5].dual = -2;
+		
+		G.edge[6].src = 2;
+		G.edge[6].dest = 4;
+		G.edge[6].weight = 1;
+		G.edge[6].dual = -1;
+		
+		G.edge[7].src = 4;
+		G.edge[7].dest = 0;
+		G.edge[7].weight = 1;
+		G.edge[7].dual = -1;
+		
+		G.edge[8].src = 4;
+		G.edge[8].dest = 3;
+		G.edge[8].weight = 1;
+		G.edge[8].dual = -1;
+	}
+	
+	private void OutputFinalCycles(CycleStruct bestCycleSet) {
+		System.out.println("======================MAX WEIGHT Cycle======================");
+		System.out.print("{ ");
+		for(int i = 0; i < bestCycleSet.IncludedCycles.size(); i++) {
+			ArrayList<Integer> path = bestCycleSet.IncludedCycles.get(i);
+			System.out.print("(");
+			int firstFinal = -1;
+			for (int j = 0; j < path.size(); j++) {
+				if (j == 0)
+					firstFinal = path.get(j);
+				System.out.print(path.get(j) + " -> ");
+			}
+			System.out.print(firstFinal + ") ");
+		}
+		System.out.println("}");
+	}
+
+	private void OutputFeasibleCycles(ArrayList<CycleStruct> feasiblecycles) {
+		System.out.println("======================FEASIBLE Cycles======================");
+		for (int m = 0; m < feasiblecycles.size(); m++) {
+			System.out.print("{ ");
+			CycleStruct feasiblecycle = feasiblecycles.get(m);
+			for(int i = 0; i < feasiblecycle.IncludedCycles.size(); i++) {
+				ArrayList<Integer> path = feasiblecycle.IncludedCycles.get(i);
+				System.out.print("(");
+				int firstFinal = -1;
+				for (int j = 0; j < path.size(); j++) {
+					if (j == 0)
+						firstFinal = path.get(j);
+					System.out.print(path.get(j) + " -> ");
+				}
+				System.out.print(firstFinal + "), ");
+			}
+
+			System.out.println("}");
+		}
+	}
+
+	private void OutputCycles(ArrayList<ArrayList<Integer>> cycles) {
+		System.out.println("==========================ALL Cycles=====================");
+		System.out.print("{");
+		
+		if(cycles.size() > 0) {
+			for (int i=0; i<cycles.size(); i++) {
+				//HashSet cSet = new HashSet<Integer>();
+				
+				System.out.print("(");
+				for (int j=0; j<cycles.get(i).size(); j++) {
+					if (j != cycles.get(i).size()-1) {
+						System.out.print(cycles.get(i).get(j) + ", ");
+					} else {
+						System.out.print(cycles.get(i).get(j));
+					}
+				}
+				if (i != cycles.size()-1) {
+					System.out.print("), ");
+				} else {
+					System.out.println(")}");
+				}
+			}
+		}
+		else
+			System.out.println("}");
 	}
 
 }
