@@ -135,7 +135,7 @@ public class KidneyExchangeTest {
 
 		//ArrayList<ArrayList<Integer>> cycles = k.getNegativeCycles(k.G, k.L);
 
-		ArrayList<ArrayList<Integer>> cycles = k.GetDiscountedPositivePriceCycles(k.G, k.L, 8);
+		ArrayList<ArrayList<Integer>> cycles = k.getNegativeCycles(k.G, k.L);
 		ArrayList<CycleStruct> feasiblecycles = k.DetermineFeasibleWeightedCycles(cycles);
 		CycleStruct bestCycleSet = k.DetermineHighestWeightedCycle(feasiblecycles);
 		//ArrayList<ArrayList<Integer>> cycles2 = k.GetDiscountedPositivePriceCycles(k.G, k.L, .8);
@@ -191,8 +191,9 @@ public class KidneyExchangeTest {
 		System.out.println("Feasible Cycles");
 		for (int m = 0; m < feasiblecycles.size(); m++) {
 			System.out.print("{ ");
-			for(int i = 0; i < bestCycleSet.IncludedCycles.size(); i++) {
-				ArrayList<Integer> path = bestCycleSet.IncludedCycles.get(i);
+			CycleStruct feasiblecycle = feasiblecycles.get(m);
+			for(int i = 0; i < feasiblecycle.IncludedCycles.size(); i++) {
+				ArrayList<Integer> path = feasiblecycle.IncludedCycles.get(i);
 				System.out.print("(");
 				int firstFinal = -1;
 				for (int j = 0; j < path.size(); j++) {
