@@ -7,15 +7,17 @@ import java.util.Scanner;
 
 public class Main {
     
-    public static final int L = 4;  // cycle cap
+    public static int L = 3;  // cycle cap
 
     public static void main(String[] args) {
         // verify one argument: inputFile
-        if (args.length != 1) {
-            System.out.println("Error. Java program expects 1 argument specifying an input file.");
+        if (args.length != 2) {
+            System.out.println("Error. Java program expects 2 arguments specifying an input file and max cycle length");
             return;
         }
         String inputFile = args[0];
+     //   System.out.println(args[1]);
+        L = Integer.parseInt(args[1]);
             
         // parse input file to create KidneyExchange instance
         KidneyExchange ke = parseInput(inputFile);
@@ -51,8 +53,8 @@ public class Main {
 			ArrayList<Integer> path = bestCycleSet.IncludedCycles.get(i);
 			System.out.print("(");
 			int firstFinal = -1;
-			for (int j = 0; j < path.size(); j++) {
-				if (j == 0)
+			for (int j = path.size()- 1; j > -1; j--) {
+				if (j == path.size()- 1)
 					firstFinal = path.get(j);
 				System.out.print(path.get(j) + " -> ");
 			}
@@ -70,8 +72,8 @@ public class Main {
 				ArrayList<Integer> path = feasiblecycle.IncludedCycles.get(i);
 				System.out.print("(");
 				int firstFinal = -1;
-				for (int j = 0; j < path.size(); j++) {
-					if (j == 0)
+				for (int j = path.size()- 1; j > -1; j--) {
+					if (j == path.size()- 1)
 						firstFinal = path.get(j);
 					System.out.print(path.get(j) + " -> ");
 				}
@@ -179,7 +181,7 @@ public class Main {
         // done parsing file, success
         scanner.close();
         
-        KidneyExchange ke = new KidneyExchange(Main.L, numVertices, weights);
+        KidneyExchange ke = new KidneyExchange(Main.L, numVertices, weights, false);
         return ke;
     }
  

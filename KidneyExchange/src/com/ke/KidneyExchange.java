@@ -33,9 +33,10 @@ public class KidneyExchange {
     double[] b;
     double[] c;
     double optimal;
+    double[] optimalValues;
     double[] dualValues;
     
-    public KidneyExchange(int L, int V, double[][] weights) {
+    public KidneyExchange(int L, int V, double[][] weights, boolean simplex) {
         this.L = L;
         this.V = V;
         this.E = V;
@@ -43,13 +44,12 @@ public class KidneyExchange {
         this.reducedWeights = new double[V][V];
         this.origG = new Graph(V, weights);
         formulateLP();  // sets a, b, and c
-        this.optimal = getLPOptimalVal(); // sets dual values
         
-        //System.out.println(optimal);
-        //this.G = createReducedGraph(this.origG);
-        
-        setReducedEdgeWeights();
-        this.G = new Graph(origG, reducedWeights);
+        if (!simplex) {
+            this.optimal = getLPOptimalVal(); // sets dual values
+            setReducedEdgeWeights();
+            this.G = new Graph(origG, reducedWeights);
+        }
     }
     
     public void setReducedEdgeWeights() {
@@ -74,6 +74,7 @@ public class KidneyExchange {
         }
         double[] x = lp.primal();
         double[] y = lp.dual();
+        optimalValues = x;
         dualValues = y;
 //        for (int i = 0; i < lp.primal().length; i++) {
 //            System.out.println("x[" + i + "] = " + x[i]);
@@ -94,7 +95,7 @@ public class KidneyExchange {
     public void formulateLP() {
         ArrayList<HashSet<Edge>> allCycles = getAllCycles(L);
         int cycleCount = allCycles.size();
-        System.out.println("Total cycle count: " + cycleCount);
+        System.out.println("Total cycle count for size limit " + L + ": " + cycleCount);
         System.out.flush();
 
         a = new double[V+cycleCount][cycleCount];
