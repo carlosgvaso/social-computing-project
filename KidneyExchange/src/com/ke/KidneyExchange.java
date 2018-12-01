@@ -446,7 +446,7 @@ public class KidneyExchange {
 							ArrayList<Integer> cycle = cycles.get(c);
 							HashSet<Integer> tempSet = new HashSet<Integer>();
 							tempSet.addAll(cycle);
-							cs.weight = tempSet.size();
+							cs.weight += tempSet.size();
 							cs.IncludedCycles.add(cycle);
 						}
 						WeightedCycles.add(cs);
