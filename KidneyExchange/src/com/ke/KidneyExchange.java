@@ -321,56 +321,94 @@ public class KidneyExchange {
  	* Parse input file.
  	* @return KidneyExchange instance
  	*/
-	public static KidneyExchange parseInput(String inputFile) {
-	Scanner scanner;
-	int numVertices = 0;
-	int numEdges = 0;
-	ArrayList<Edge> edges = new ArrayList<>();
-	// create scanner object to parse file
-	try {
-	    scanner = new Scanner(new File(inputFile));
-	} catch (FileNotFoundException e) {
-	    System.out.println("Error. File not found: " + inputFile);
-	    return null;
-	}
-	// parse the matrix size from first line
-	if (scanner.hasNextInt()) {
-	    numVertices = scanner.nextInt();
-	} else {
-	    System.out.println("Error. Failed to parse matrix size. Input file is incorrectly formatted.");
-	    scanner.close();
-	    return null;
-	}
-	// parse the square matrix values and calculate non-zero weight edges
-	int[][] weights = new int[numVertices][numVertices];
-	for (int rowIndex = 0; rowIndex < numVertices; rowIndex++) {
-	    for (int colIndex = 0; colIndex < numVertices; colIndex++) {
+	public static KidneyExchange parseInput(String inputFile, String reducedFile) {
+
+		Scanner scanner;
+		int numVertices = 0;
+		int numEdges = 0;
+		// create scanner object to parse file
+		try {
+		    scanner = new Scanner(new File(inputFile));
+		} catch (FileNotFoundException e) {
+		    System.out.println("Error. File not found: " + inputFile);
+		    return null;
+		}
+		// parse the matrix size from first line
 		if (scanner.hasNextInt()) {
-		    int edgeWeight = scanner.nextInt();
-		    weights[rowIndex][colIndex] = edgeWeight;
-		    if (edgeWeight != 0) {
-			numEdges++;
-		    }
+		    numVertices = scanner.nextInt();
 		} else {
-		    System.out.println("Error. Failed to parse weight matrix. Input file is incorrectly formatted.");
+		    System.out.println("Error. Failed to parse matrix size. Input file is incorrectly formatted.");
 		    scanner.close();
 		    return null;
 		}
-	    }
-	}
-	// done parsing file, success
-	scanner.close();
-	// create KidneyExchange instance
+		// parse the square matrix values and calculate non-zero weight edges
+		int[][] weights = new int[numVertices][numVertices];
+		for (int rowIndex = 0; rowIndex < numVertices; rowIndex++) {
+		    for (int colIndex = 0; colIndex < numVertices; colIndex++) {
+			if (scanner.hasNextInt()) {
+			    int edgeWeight = scanner.nextInt();
+			    weights[rowIndex][colIndex] = edgeWeight;
+			    if (edgeWeight != 0) {
+				numEdges++;
+			    }
+			} else {
+			    System.out.println("Error. Failed to parse weight matrix. Input file is incorrectly formatted.");
+			    scanner.close();
+			    return null;
+			}
+		    }
+		}
+		// done parsing file, success
+		scanner.close();
+		
+		
+		Scanner scanner2;
+		// create scanner object to parse file
+		try {
+		    scanner2 = new Scanner(new File(reducedFile));
+		} catch (FileNotFoundException e) {
+		    System.out.println("Error. File not found: " + reducedFile);
+		    return null;
+		}
+		// parse the matrix size from first line
+		if (scanner2.hasNextInt()) {
+		    numVertices = scanner2.nextInt();
+		} else {
+		    System.out.println("Error. Failed to parse matrix size. Reduced file is incorrectly formatted.");
+		    scanner2.close();
+		    return null;
+		}
+		// parse the square matrix values and calculate non-zero weight edges
+		int[][] duals = new int[numVertices][numVertices];
+		for (int rowIndex = 0; rowIndex < numVertices; rowIndex++) {
+		    for (int colIndex = 0; colIndex < numVertices; colIndex++) {
+			if (scanner2.hasNextInt()) {
+			    int dualWeight = scanner2.nextInt();
+			    duals[rowIndex][colIndex] = dualWeight;
+			} else {
+			    System.out.println("Error. Failed to parse weight matrix. Reduced file is incorrectly formatted.");
+			    scanner2.close();
+			    return null;
+			}
+		    }
+		}
+		// done parsing file, success
+		scanner2.close();
+		
+	
+	
 	KidneyExchange ke = new KidneyExchange(3, numVertices, numEdges);
 	// update edge values
 	int edgeIndex = 0;
 	for (int rowIndex = 0; rowIndex < numVertices; rowIndex++) {
 	    for (int colIndex = 0; colIndex < numVertices; colIndex++) {
 		int edgeWeight = weights[rowIndex][colIndex];
+		int dualWeight = duals[rowIndex][colIndex];
 		if (edgeWeight != 0) {
 		    ke.G.edge[edgeIndex].src = rowIndex;
 		    ke.G.edge[edgeIndex].dest = colIndex;
 		    ke.G.edge[edgeIndex].weight = edgeWeight;
+		    ke.G.edge[edgeIndex].dual = dualWeight;
 		    edgeIndex++;
 		}
 	    }
@@ -378,21 +416,21 @@ public class KidneyExchange {
 	// return created KidneyExchange instance
 	return ke;
 }
-
-
+	
 /**
  * @param args
  */
-public static void main(String[] args) {
+		public static void main(String[] args) {
 	// verify one argument: inputFile
-    	if (args.length != 1) {
-    	    System.out.println("Error. Java program KidneyExchange expects 1 argument specifying an input file.");
+    	if (args.length != 2) {
+    	    System.out.println("Error. Java program KidneyExchange expects 2 argument specifying an input file for the graph and for the reduced graph.");
     	    return;
     	}
-    	String inputFile = args[0];
+    	String inputgraph = args[0];
+    	String inputreduced = args[1];
             
     	// parse input file to create KidneyExchange instance
-    	KidneyExchange k = parseInput(inputFile);
+    	KidneyExchange k = parseInput(inputgraph, inputreduced);
 
 		ArrayList<ArrayList<Integer>> cycles = k.getNegativeCycles(k.G, k.L);
 		k.OutputCycles(cycles);
@@ -404,12 +442,12 @@ public static void main(String[] args) {
 		k.OutputFinalCycles(bestCycleSet);
 		
 		
-		ArrayList<ArrayList<Integer>> failurecycles = k.GetDiscountedPositivePriceCycles(k.G, k.L, 1000);
-		k.OutputCycles(failurecycles);
+		//ArrayList<ArrayList<Integer>> failurecycles = k.GetDiscountedPositivePriceCycles(k.G, k.L, 1000);
+		//k.OutputCycles(failurecycles);
 		
 
-		ArrayList<ArrayList<Integer>> failurecycles2 = k.GetDiscountedPositivePriceCycles(k.G, k.L, .001);
-		k.OutputCycles(failurecycles2);
+		//ArrayList<ArrayList<Integer>> failurecycles2 = k.GetDiscountedPositivePriceCycles(k.G, k.L, .001);
+		//k.OutputCycles(failurecycles2);
 	}
 
 	private void makeGraph() {
