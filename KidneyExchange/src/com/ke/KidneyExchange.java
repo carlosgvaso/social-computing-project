@@ -6,16 +6,6 @@ package com.ke;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.IMIPResult;
-import edu.harvard.econcs.jopt.solver.SolveParam;
-import edu.harvard.econcs.jopt.solver.client.SolverClient;
-import edu.harvard.econcs.jopt.solver.mip.CompareType;
-import edu.harvard.econcs.jopt.solver.mip.Constraint;
-import edu.harvard.econcs.jopt.solver.mip.MIP;
-import edu.harvard.econcs.jopt.solver.mip.VarType;
-import edu.harvard.econcs.jopt.solver.mip.Variable;
-
 /**
  * @author Jose Carlos Martinez Garcia-Vaso jcm3767 <carlosgvaso@gmail.com>
  * @author Trevor Anderson
@@ -60,12 +50,6 @@ public class KidneyExchange {
         
         setReducedEdgeWeights();
         this.G = new Graph(origG, reducedWeights);
-    }
-    
-    public IMIPResult solve(IMIP mip, SolverClient client) {
-        mip.setSolveParam(SolveParam.CALC_DUALS, true);
-        IMIPResult result = client.solve(mip);
-        return result;
     }
     
     public void setReducedEdgeWeights() {
@@ -484,50 +468,5 @@ public class KidneyExchange {
 		}
 		return Cycles.get(bestCycleSet);
 	}
-	
-	
-//	public Graph createReducedGraph(Graph graph) {
-//        
-//        
-//	      IMIP mip;
-//	      ArrayList<Constraint> constraints;
-//	      
-//	      mip = new MIP();
-//	      
-//	      Variable[] vars = new Variable[c.length];
-//	      for (int i = 0; i < c.length; i++) {
-//	          vars[i] = new Variable("x" + i, VarType.DOUBLE, 0, 1);
-//	          mip.add(vars[i]);
-//	      }
-//	      
-//	      mip.setObjectiveMax(true);
-//	      for (int i = 0; i < c.length; i++) {
-//	          mip.addObjectiveTerm(c[i], vars[i]);
-//	      }
-//	      
-//	      Constraint[] cons = new Constraint[a.length];
-//	      for (int i = 0; i < a.length; i++) {
-//	          Constraint con = new Constraint(CompareType.LEQ, 1);
-//	          for (int j = 0; j < a[i].length; j++) {
-//	              con.addTerm(a[i][j], vars[j]);
-//	          }
-//	          mip.add(con);
-//	          cons[i] = con;
-//	      }
-//
-//	      System.out.println(mip);
-//	      
-//	      IMIPResult result = solve(mip, new SolverClient());
-//	      System.out.println(result);
-//	      for (int i = 0; i < vars.length; i++) {
-//	          System.out.println("x" + i + ": " + result.getValue("x" + i));
-//	      }
-//	      for (int i = 0; i < cons.length/2; i++) {
-//	          System.out.println("Dual of n" + i + ": " + result.getDual(cons[i]));
-//	      }
-//
-//	        
-//	      return null;
-//	    }
 
 }
