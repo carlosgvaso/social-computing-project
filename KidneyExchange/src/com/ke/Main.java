@@ -181,7 +181,7 @@ public class Main {
         // done parsing file, success
         scanner.close();
         
-        KidneyExchange ke = new KidneyExchange(Main.L, numVertices, weights);
+        KidneyExchange ke = new KidneyExchange(Main.L, numVertices, weights, false);
         return ke;
     }
  
