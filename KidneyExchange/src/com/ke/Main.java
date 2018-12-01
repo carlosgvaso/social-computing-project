@@ -51,8 +51,8 @@ public class Main {
 			ArrayList<Integer> path = bestCycleSet.IncludedCycles.get(i);
 			System.out.print("(");
 			int firstFinal = -1;
-			for (int j = 0; j < path.size(); j++) {
-				if (j == 0)
+			for (int j = path.size()- 1; j > -1; j--) {
+				if (j == path.size()- 1)
 					firstFinal = path.get(j);
 				System.out.print(path.get(j) + " -> ");
 			}
@@ -70,8 +70,8 @@ public class Main {
 				ArrayList<Integer> path = feasiblecycle.IncludedCycles.get(i);
 				System.out.print("(");
 				int firstFinal = -1;
-				for (int j = 0; j < path.size(); j++) {
-					if (j == 0)
+				for (int j = path.size()- 1; j > -1; j--) {
+					if (j == path.size()- 1)
 						firstFinal = path.get(j);
 					System.out.print(path.get(j) + " -> ");
 				}
