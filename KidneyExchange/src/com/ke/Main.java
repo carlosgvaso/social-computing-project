@@ -7,15 +7,17 @@ import java.util.Scanner;
 
 public class Main {
     
-    public static final int L = 3;  // cycle cap
+    public static int L = 3;  // cycle cap
 
     public static void main(String[] args) {
         // verify one argument: inputFile
-        if (args.length != 1) {
-            System.out.println("Error. Java program expects 1 argument specifying an input file.");
+        if (args.length != 2) {
+            System.out.println("Error. Java program expects 2 arguments specifying an input file and max cycle length");
             return;
         }
         String inputFile = args[0];
+     //   System.out.println(args[1]);
+        L = Integer.parseInt(args[1]);
             
         // parse input file to create KidneyExchange instance
         KidneyExchange ke = parseInput(inputFile);
