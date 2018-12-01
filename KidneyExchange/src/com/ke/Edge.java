@@ -40,19 +40,19 @@ public class Edge {
     public double calculateEdgeWeight() {
 //        System.out.println(src.type);
 //        System.out.println(dest.type);
-        if (src.type == TYPE.BLACK || dest.type == TYPE.BLACK) {
+        if (src.donorType == TYPE.BLACK || dest.patientType == TYPE.BLACK) {
             return 0;
-        } else if ((src.type == TYPE.BLUE && dest.type == TYPE.BLUE) || (src.type == TYPE.ORANGE && dest.type == TYPE.ORANGE)) {
+        } else if ((src.donorType == TYPE.BLUE && dest.patientType == TYPE.BLUE) || (src.donorType == TYPE.ORANGE && dest.patientType == TYPE.ORANGE)) {
             return 1;
-        } else if ((src.type == TYPE.GREEN && dest.type == TYPE.GREEN) || (src.type == TYPE.RED && dest.type == TYPE.RED)) {
+        } else if ((src.donorType == TYPE.GREEN && dest.patientType == TYPE.GREEN) || (src.donorType == TYPE.RED && dest.patientType == TYPE.RED)) {
             return 1;
-        } else if ((src.type == TYPE.BLUE && dest.type == TYPE.ORANGE) || (src.type == TYPE.ORANGE && dest.type == TYPE.BLUE)) {
+        } else if ((src.donorType == TYPE.BLUE && dest.patientType == TYPE.ORANGE) || (src.donorType == TYPE.ORANGE && dest.patientType == TYPE.BLUE)) {
             return 0.5;
-        } else if ((src.type == TYPE.BLUE && dest.type == TYPE.GREEN) || (src.type == TYPE.GREEN && dest.type == TYPE.BLUE)) {
+        } else if ((src.donorType == TYPE.BLUE && dest.patientType == TYPE.GREEN) || (src.donorType == TYPE.GREEN && dest.patientType == TYPE.BLUE)) {
             return 0.2;
-        } else if ((src.type == TYPE.RED && dest.type == TYPE.ORANGE) || (src.type == TYPE.ORANGE && dest.type == TYPE.RED)) {
+        } else if ((src.donorType == TYPE.RED && dest.patientType == TYPE.ORANGE) || (src.donorType == TYPE.ORANGE && dest.patientType == TYPE.RED)) {
             return 0.7;
-        } else if ((src.type == TYPE.RED && dest.type == TYPE.GREEN) || (src.type == TYPE.GREEN && dest.type == TYPE.RED)) {
+        } else if ((src.donorType == TYPE.RED && dest.patientType == TYPE.GREEN) || (src.donorType == TYPE.GREEN && dest.patientType == TYPE.RED)) {
             return 0.6;
         } else {
             return 0;

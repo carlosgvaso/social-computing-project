@@ -2,9 +2,14 @@ package com.ke;
 
 public class TestCaseGenerator {
     
-    public static final int V = 5;  // number of vertices
+    public static int V = 25;  // number of vertices
     
     public static void main(String[] args) {
+        
+        // check for arg
+        if (args.length == 1) {
+            V = Integer.parseInt(args[0]);
+        }
         
         Graph G = new Graph(V);
         printGraphInput(G);

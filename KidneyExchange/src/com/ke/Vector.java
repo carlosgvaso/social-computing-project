@@ -12,24 +12,29 @@ public class Vector {
             BLACK
     }
     
-    public TYPE type;
+    public TYPE donorType;
+    public TYPE patientType;
     public int number;
     
     public Vector(int num) {
         this.number = num;
-        this.type = randomType();
+        this.donorType = randomType();
+        this.patientType = randomType();
+        while (donorType == patientType) {
+            this.patientType = randomType();
+        }
     }
     
-    public Vector(int num, TYPE type) {
+    public Vector(int num, TYPE donorType, TYPE patientType) {
         this.number = num;
-        this.type = type;
+        this.donorType = donorType;
+        this.patientType = patientType;
     }
     
     public TYPE randomType() {
         Random ran = new Random();
         TYPE type;
         int num = ran.nextInt(5);
-        //System.out.println("..." + num);
         switch (num) {
         case 0:
                 type = TYPE.BLUE;
