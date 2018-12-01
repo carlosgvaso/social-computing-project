@@ -78,9 +78,9 @@ public class KidneyExchange {
 //        for (int i = 0; i < lp.primal().length; i++) {
 //            System.out.println("x[" + i + "] = " + x[i]);
 //        }
-        for (int i = 0; i < lp.dual().length; i++) {
-            System.out.println("y[" + i + "] = " + y[i]);
-        }
+//        for (int i = 0; i < lp.dual().length; i++) {
+//            System.out.println("y[" + i + "] = " + y[i]);
+//        }
         return lp.value();
     }
     
@@ -293,7 +293,7 @@ public class KidneyExchange {
 			
 			// Iterate over the max cycle length.
 			for (int i=1; i<cycle_len; i++) {
-				System.out.println("i = " + i);
+				//System.out.println("i = " + i);
 				
 				// Set initial values
 				for (int dest=0; dest<graph.V; dest++) {
@@ -305,21 +305,21 @@ public class KidneyExchange {
 				
 				// Iterate over all edges.
 				for (int e=0; e<graph.E; e++) {
-					System.out.println("Edge: " + e + ", src: " + graph.edges.get(e).src.number + ", dest: " + graph.edges.get(e).dest.number + ", dual weight: " + graph.edges.get(e).reducedWeight);
+					//System.out.println("Edge: " + e + ", src: " + graph.edges.get(e).src.number + ", dest: " + graph.edges.get(e).dest.number + ", dual weight: " + graph.edges.get(e).reducedWeight);
 					
 					// If there is no loop in the path.
 					if (!this.traversePreds(graph.edges.get(e).src.number, preds, (i-1)).contains(graph.edges.get(e).dest.number)) {
-						System.out.println("There is no loop in the path.");
+						//System.out.println("There is no loop in the path.");
 						
 						// If the step decreases the distance of the node.
 						if (dist[graph.edges.get(e).src.number][i-1] != KidneyExchange.inf && dist[graph.edges.get(e).src.number][i-1] + graph.edges.get(e).reducedWeight < dist[graph.edges.get(e).dest.number][i]) {
 							// Update to shorter distance
 							dist[graph.edges.get(e).dest.number][i] = dist[graph.edges.get(e).src.number][i-1] + graph.edges.get(e).reducedWeight;
-							System.out.println("Update distance to: " + dist[graph.edges.get(e).dest.number][i]);
+							//System.out.println("Update distance to: " + dist[graph.edges.get(e).dest.number][i]);
 							
 							// Store correct predecessor.
 							preds[graph.edges.get(e).dest.number][i] = graph.edges.get(e).src.number;
-							System.out.println("Update predecessor to: " + preds[graph.edges.get(e).dest.number][i]);
+							//System.out.println("Update predecessor to: " + preds[graph.edges.get(e).dest.number][i]);
 						}
 					}
 				}
@@ -327,7 +327,7 @@ public class KidneyExchange {
 			
 			// Find negative weight cycles with s as the source. Iterate over all edges
 			for (int e=0; e<graph.E; e++) {
-				System.out.println("Edge: " + e + ", src: " + graph.edges.get(e).src.number + ", dest: " + graph.edges.get(e).dest.number + ", dual weight: " + graph.edges.get(e).reducedWeight);
+				//System.out.println("Edge: " + e + ", src: " + graph.edges.get(e).src.number + ", dest: " + graph.edges.get(e).dest.number + ", dual weight: " + graph.edges.get(e).reducedWeight);
 				
 				// If the edge points from any vertex v (v!=src) to the src vertex (we have a cycle).
 				if (graph.edges.get(e).src.number != src && graph.edges.get(e).dest.number == src) {
@@ -375,15 +375,15 @@ public class KidneyExchange {
 			position--;
 		}
 		
-		System.out.print("predecessors traversed: ");
-		for (int i=0; i<cycle.size(); i++) {
-			System.out.print(cycle.get(i));
-			if (i != cycle.size()-1) {
-				System.out.print(", ");
-			} else {
-				System.out.println();
-			}
-		}
+//		System.out.print("predecessors traversed: ");
+//		for (int i=0; i<cycle.size(); i++) {
+//			System.out.print(cycle.get(i));
+//			if (i != cycle.size()-1) {
+//				System.out.print(", ");
+//			} else {
+//				System.out.println();
+//			}
+//		}
 		
 		return cycle;
 	}
@@ -435,7 +435,7 @@ public class KidneyExchange {
 						cycleList.add((i + j) % cycles.size());
 					}
 				}
-				if (vertexSet.size() == this.V) {
+				//if (vertexSet.size() == this.V) {
 					cycleList.add(k);
 					HashSet<Integer> t = new HashSet<Integer>();
 					t.addAll(cycleList);
@@ -443,15 +443,15 @@ public class KidneyExchange {
 						CycleStruct cs = new CycleStruct();
 						for(int c : cycleList) {
 							ArrayList<Integer> cycle = cycles.get(c);
-							for (int cI : cycle) {
-								cs.weight += this.G.edges.get(cI).weight;
-							}
+							HashSet<Integer> tempSet = new HashSet<Integer>();
+							tempSet.addAll(cycle);
+							cs.weight = tempSet.size();
 							cs.IncludedCycles.add(cycle);
 						}
 						WeightedCycles.add(cs);
 						
 					}
-				}
+				//}
 			}
 		}
 		return WeightedCycles;

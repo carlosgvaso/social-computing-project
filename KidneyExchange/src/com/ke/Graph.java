@@ -88,7 +88,7 @@ public class Graph {
         for (int i = 0; i < G.E; i++) {
            int src = edges.get(i).src.number;
            int dest = edges.get(i).dest.number;
-           edges.get(i).weight = weights[src][dest];
+           edges.get(i).reducedWeight = weights[src][dest];
         }
     }
 }
