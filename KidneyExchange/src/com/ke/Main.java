@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Main {
     
-    public static final int L = 4;  // cycle cap
+    public static final int L = 3;  // cycle cap
 
     public static void main(String[] args) {
         // verify one argument: inputFile

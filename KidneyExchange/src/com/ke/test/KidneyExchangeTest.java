@@ -1,24 +1,24 @@
-//package com.ke.test;
-//
-//import static org.junit.Assert.*;
-//import org.junit.Test;
-//
-//import com.ke.KidneyExchange;
-//
-//import java.util.ArrayList;
-//import java.util.HashSet;
-//import java.util.Set;
-//
-///**
-// * Test class for KidneyExchange.
-// *
-// * @author	Jose Carlos Martinez Garcia-Vaso jcm3767 <carlosgvaso@gmail.com>
-// * @author Trevor Anderson
-// * @author Bryson Banks
-// * @author Alexander Hoganson
-// */
-//public class KidneyExchangeTest {
-//	
+package com.ke.test;
+
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+import com.ke.KidneyExchange;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Test class for KidneyExchange.
+ *
+ * @author	Jose Carlos Martinez Garcia-Vaso jcm3767 <carlosgvaso@gmail.com>
+ * @author Trevor Anderson
+ * @author Bryson Banks
+ * @author Alexander Hoganson
+ */
+public class KidneyExchangeTest {
+	
 //	@Test
 //	public void testTraversePreds() {
 //		// Assume L=3, |V|=3, L=3
@@ -62,4 +62,4 @@
 //		
 ////		/cles.equals(cycles_exp));
 //	}
-//}
+}
